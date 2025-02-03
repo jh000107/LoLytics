@@ -1,26 +1,9 @@
 {
-	"name": "My Stat Data Ingestion",
+	"name": "Historical Stat Data Ingestion",
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Match IDs",
-				"description": "Getting a list of match ids",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "GET"
-				}
-			},
-			{
-				"name": "Lookup Last Run Time",
+				"name": "Lookup Last Starting Index",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -44,17 +27,17 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "lastRun_metadata",
+						"referenceName": "lastRun",
 						"type": "DatasetReference"
 					}
 				}
 			},
 			{
-				"name": "Set Start Time",
+				"name": "Update Start Time",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Lookup Last Run Time",
+						"activity": "Lookup Last Starting Index",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -66,9 +49,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "startTime",
+					"variableName": "computedStartIndex",
 					"value": {
-						"value": "@coalesce(activity('Lookup Last Run Time').output.firstRow.lastRunTime, pipeline().parameters.startTime)",
+						"value": "@coalesce(activity('Lookup Last Starting Index').output.firstRow.lastRunTime, pipeline().parameters.startIndex)",
 						"type": "Expression"
 					}
 				}
@@ -85,11 +68,21 @@
 			},
 			"startTime": {
 				"type": "int",
-				"defaultValue": "@div(ticks(adddays(utcnow(), -1)), 10000000)"
+				"defaultValue": 1662004800
 			},
 			"endTime": {
 				"type": "int",
-				"defaultValue": "@div(ticks(utcnow()), 10000000)"
+				"defaultValue": 1738558799
+			},
+			"startIndex": {
+				"type": "int",
+				"defaultValue": 0
+			}
+		},
+		"variables": {
+			"computedStartIndex": {
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"annotations": []
