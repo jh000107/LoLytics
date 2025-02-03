@@ -3,8 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy My Stat",
-				"type": "Copy",
+				"name": "Get Match IDs",
+				"description": "Getting a list of match ids",
+				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,10 +16,82 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"enableStaging": false
+					"method": "GET"
+				}
+			},
+			{
+				"name": "Lookup Last Run Time",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "lastRun_metadata",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set Start Time",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookup Last Run Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "startTime",
+					"value": {
+						"value": "@coalesce(activity('Lookup Last Run Time').output.firstRow.lastRunTime, pipeline().parameters.startTime)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
+		"parameters": {
+			"puuid": {
+				"type": "string",
+				"defaultValue": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg"
+			},
+			"batch_size": {
+				"type": "int",
+				"defaultValue": 100
+			},
+			"startTime": {
+				"type": "int",
+				"defaultValue": "@div(ticks(adddays(utcnow(), -1)), 10000000)"
+			},
+			"endTime": {
+				"type": "int",
+				"defaultValue": "@div(ticks(utcnow()), 10000000)"
+			}
+		},
 		"annotations": []
 	}
 }
