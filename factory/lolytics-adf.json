@@ -1,0 +1,9 @@
+{
+	"name": "lolytics-adf",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3b35bc32-5556-4494-aee5-2aef99defdd2",
+		"tenantId": "d57d32cc-c121-488f-b07b-dfe705680c71"
+	}
+}
