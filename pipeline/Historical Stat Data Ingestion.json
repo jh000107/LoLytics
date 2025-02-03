@@ -55,6 +55,51 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Until 100 matches",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Update Start Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(variables('computedStartIndex'), 100)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Match IDs",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"api_key": "RGAPI-8d813043-591d-4b1f-bb8e-ec5b600baf22"
+								},
+								"url": {
+									"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/@{pipeline().parameters.puuid}/ids?startTime=@{pipeline().parameters.startTime}&endtime=@{pipeline().parameters.endTime}type=@{pipeline().parameters.matchType}&start=@{variables('computedStartIndex')}&count=@{pipeline().parameters.batch_size}",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
 			}
 		],
 		"parameters": {
@@ -77,6 +122,10 @@
 			"startIndex": {
 				"type": "int",
 				"defaultValue": 0
+			},
+			"matchType": {
+				"type": "string",
+				"defaultValue": "ranked"
 			}
 		},
 		"variables": {
