@@ -21,6 +21,96 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Historical Stat Data Ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Match ID",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/@{pipeline().parameters.puuid}/ids?startTime=@{pipeline().parameters.startTime}&endTime=@{pipeline().parameters.endTime}&type=@{pipeline().parameters.matchType}&start=0&count=@{pipeline().parameters.batch_size}&api_key=@{pipeline().parameters.api_key}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set JsonArrayOutput",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Get Match ID",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "MatchIdJsonArrayOutput",
+							"value": {
+								"value": "@json(activity('Get Match ID').output.response)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"puuid": {
+						"type": "string",
+						"defaultValue": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg"
+					},
+					"startTime": {
+						"type": "int",
+						"defaultValue": 1662004800
+					},
+					"endTime": {
+						"type": "int",
+						"defaultValue": 1738558799
+					},
+					"batch_size": {
+						"type": "int",
+						"defaultValue": 100
+					},
+					"matchType": {
+						"type": "string",
+						"defaultValue": "ranked"
+					},
+					"api_key": {
+						"type": "string",
+						"defaultValue": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
+					}
+				},
+				"variables": {
+					"MatchIdJsonArrayOutput": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlob')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -120,102 +210,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/riot_rest')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Historical Stat Data Ingestion')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get Match ID",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RestSource",
-								"httpRequestTimeout": "00:01:40",
-								"requestInterval": "00.00:00:00.010",
-								"requestMethod": "GET"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['matchID']"
-										},
-										"sink": {
-											"path": "match_id"
-										}
-									}
-								],
-								"collectionReference": "$['']"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "match_id_source",
-								"type": "DatasetReference",
-								"parameters": {
-									"puuid": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg",
-									"batch_size": 100,
-									"startTime": 1662004800,
-									"endTime": 1738558799,
-									"matchType": "ranked",
-									"api_key": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "match_id_sink",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"computedStartIndex": {
-						"type": "Integer",
-						"defaultValue": 0
-					},
-					"nextStartIndex": {
-						"type": "Integer",
-						"defaultValue": 0
-					},
-					"matchIDs": {
-						"type": "Array"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/match_id_source')]",
-				"[concat(variables('factoryId'), '/datasets/match_id_sink')]"
 			]
 		}
 	]
