@@ -156,7 +156,21 @@
 									"type": "JsonWriteSettings"
 								}
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['matchID']"
+										},
+										"sink": {
+											"path": "match_id"
+										}
+									}
+								],
+								"collectionReference": "$['']"
+							}
 						},
 						"inputs": [
 							{
