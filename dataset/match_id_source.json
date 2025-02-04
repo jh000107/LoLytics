@@ -1,0 +1,40 @@
+{
+	"name": "match_id_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "riot_rest",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"puuid": {
+				"type": "string",
+				"defaultValue": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg"
+			},
+			"batch_size": {
+				"type": "int",
+				"defaultValue": 100
+			},
+			"startTime": {
+				"type": "int",
+				"defaultValue": 1662004800
+			},
+			"endTime": {
+				"type": "int",
+				"defaultValue": 1738558799
+			},
+			"matchType": {
+				"type": "string",
+				"defaultValue": "ranked"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start={startIndex}&count=@{dataset().batch_size}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
