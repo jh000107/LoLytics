@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https:///lol/match/v5/matches/by-puuid/",
+			"url": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
