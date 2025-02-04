@@ -96,6 +96,54 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Set nextStartIndex",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Match IDs",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "nextStartIndex",
+								"value": {
+									"value": "@add(variables('computedStartIndex'), pipeline().parameters.batch_size)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Update computedStartIndex",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set nextStartIndex",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "computedStartIndex",
+								"value": {
+									"value": "@variables('nextStartIndex')",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
@@ -132,6 +180,9 @@
 			"computedStartIndex": {
 				"type": "Integer",
 				"defaultValue": 0
+			},
+			"nextStartIndex": {
+				"type": "Integer"
 			}
 		},
 		"annotations": []
