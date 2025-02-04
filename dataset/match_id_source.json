@@ -35,7 +35,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start={startIndex}&count=@{dataset().batch_size}",
+				"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start=0&count=@{dataset().batch_size}",
 				"type": "Expression"
 			}
 		},

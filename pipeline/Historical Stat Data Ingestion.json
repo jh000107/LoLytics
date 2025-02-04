@@ -19,10 +19,7 @@
 						"type": "RestSource",
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "GET",
-						"paginationRules": {
-							"QueryParameters.startIndex": "RANGE:0:200:100"
-						}
+						"requestMethod": "GET"
 					},
 					"sink": {
 						"type": "JsonSink",
