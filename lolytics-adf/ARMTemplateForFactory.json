@@ -11,17 +11,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlob'"
 		},
-		"riot_rest_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'riot_rest'"
-		},
 		"riot_rest_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"
-		},
-		"riot_rest_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "n202u000107"
 		}
 	},
 	"variables": {
@@ -174,7 +166,7 @@
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start=0&count=@{dataset().batch_size}",
+						"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start=0&count=@{dataset().batch_size}&api_key=@{dataset().api_key}",
 						"type": "Expression"
 					}
 				},
@@ -207,12 +199,7 @@
 				"typeProperties": {
 					"url": "[parameters('riot_rest_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('riot_rest_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('riot_rest_password')]"
-					}
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []

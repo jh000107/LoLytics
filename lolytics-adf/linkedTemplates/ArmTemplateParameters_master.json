@@ -8,14 +8,8 @@
 		"AzureBlob_connectionString": {
 			"value": ""
 		},
-		"riot_rest_password": {
-			"value": ""
-		},
 		"riot_rest_properties_typeProperties_url": {
 			"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"
-		},
-		"riot_rest_properties_typeProperties_userName": {
-			"value": "n202u000107"
 		},
 		"containerUri": {
 			"value": ""
