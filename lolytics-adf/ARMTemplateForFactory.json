@@ -1,0 +1,203 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "lolytics-adf"
+		},
+		"AzureBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlob'"
+		},
+		"riot_rest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https:///lol/match/v5/matches/by-puuid/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Historical Stat Data Ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Match ID",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"api_key": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
+								},
+								"paginationRules": {
+									"QueryParameters.startIndex": "RANGE:0:200:100"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "match_id_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "match_id_sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"computedStartIndex": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"nextStartIndex": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"matchIDs": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/match_id_source')]",
+				"[concat(variables('factoryId'), '/datasets/match_id_sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/riot_rest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('riot_rest_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/match_id_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "riot_rest",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"puuid": {
+						"type": "string",
+						"defaultValue": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg"
+					},
+					"batch_size": {
+						"type": "int",
+						"defaultValue": 100
+					},
+					"startTime": {
+						"type": "int",
+						"defaultValue": 1662004800
+					},
+					"endTime": {
+						"type": "int",
+						"defaultValue": 1738558799
+					},
+					"matchType": {
+						"type": "string",
+						"defaultValue": "ranked"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@{dataset().puuid}/ids?startTime=@{dataset().startTime}&endTime=@{dataset().endTime}&type=@{dataset().matchType}&start={startIndex}&count=@{dataset().batch_size}",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/riot_rest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/match_id_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "match_id.json",
+						"folderPath": "bronze",
+						"container": "lolytics"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlob')]"
+			]
+		}
+	]
+}
