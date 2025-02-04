@@ -49,6 +49,31 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/match_id_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "match_id.json",
+						"folderPath": "bronze",
+						"container": "lolytics"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/match_id_source')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -77,6 +102,10 @@
 					"matchType": {
 						"type": "string",
 						"defaultValue": "ranked"
+					},
+					"api_key": {
+						"type": "string",
+						"defaultValue": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
 					}
 				},
 				"annotations": [],
@@ -91,31 +120,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/riot_rest')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/match_id_sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "match_id.json",
-						"folderPath": "bronze",
-						"container": "lolytics"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlob')]"
 			]
 		},
 		{
@@ -142,9 +146,6 @@
 								"httpRequestTimeout": "00:01:40",
 								"requestInterval": "00.00:00:00.010",
 								"requestMethod": "GET",
-								"additionalHeaders": {
-									"api_key": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
-								},
 								"paginationRules": {
 									"QueryParameters.startIndex": "RANGE:0:200:100"
 								}
@@ -164,7 +165,14 @@
 							{
 								"referenceName": "match_id_source",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"puuid": "oDBBv1pj4GZINaHiNDtFqKUtL9qDDbGki0CKdsYAi6PvqKHg6zi2E3bh8N162f4IEkKKHDuMXruBIg",
+									"batch_size": 100,
+									"startTime": 1662004800,
+									"endTime": 1738558799,
+									"matchType": "ranked",
+									"api_key": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
+								}
 							}
 						],
 						"outputs": [
