@@ -25,6 +25,10 @@
 			"matchType": {
 				"type": "string",
 				"defaultValue": "ranked"
+			},
+			"api_key": {
+				"type": "string",
+				"defaultValue": "RGAPI-aa3fb622-e6d4-4954-bfac-5e63ded31eb1"
 			}
 		},
 		"annotations": [],
