@@ -105,7 +105,8 @@
 				"defaultValue": "ranked"
 			},
 			"api_key": {
-				"type": "securestring"
+				"type": "string",
+				"defaultValue": "RGAPI-69efda34-d09f-4161-897e-333d39c47610"
 			}
 		},
 		"variables": {
