@@ -67,6 +67,9 @@
 			"matchType": {
 				"type": "string",
 				"defaultValue": "ranked"
+			},
+			"api_key": {
+				"type": "securestring"
 			}
 		},
 		"variables": {
