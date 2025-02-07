@@ -83,7 +83,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Get Match Data",
 				"type": "Copy",
 				"dependsOn": [
 					{
