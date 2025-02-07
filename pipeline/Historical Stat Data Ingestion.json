@@ -83,7 +83,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For Each Match ID",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -95,6 +95,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@variables('MatchIdJsonArrayOutput')",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Get Match Data",
@@ -109,8 +113,20 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET"
+								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "match_data_source",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
