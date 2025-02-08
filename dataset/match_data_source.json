@@ -17,7 +17,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@{dataset().matchID}/api_key=@{dataset().api_key}",
+				"value": "@{dataset().matchID}?api_key=@{dataset().api_key}",
 				"type": "Expression"
 			}
 		},
