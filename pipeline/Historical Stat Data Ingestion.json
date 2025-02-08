@@ -99,6 +99,7 @@
 						"value": "@array(variables('MatchIdJsonArrayOutput'))",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Get Match Data",
