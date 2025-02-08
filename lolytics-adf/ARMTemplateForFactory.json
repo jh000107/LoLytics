@@ -159,7 +159,12 @@
 										{
 											"referenceName": "match_data_source",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"matchID": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
 										}
 									],
 									"outputs": [
@@ -192,7 +197,7 @@
 					},
 					"batch_size": {
 						"type": "int",
-						"defaultValue": 100
+						"defaultValue": 3
 					},
 					"matchType": {
 						"type": "string",
@@ -213,6 +218,59 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/match_data_source')]",
 				"[concat(variables('factoryId'), '/datasets/match_data_sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/match_data_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "match_data.json",
+						"folderPath": "bronze/match_data",
+						"container": "lolytics"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/match_data_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "riot_rest",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"matchID": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@dataset().matchID",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/riot_rest')]"
 			]
 		},
 		{
@@ -242,51 +300,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/match_data_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "riot_rest",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {
-					"relativeUrl": ""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/riot_rest')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/match_data_sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "match_data.json",
-						"folderPath": "match_data",
-						"container": "bronze"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlob')]"
-			]
 		}
 	]
 }
