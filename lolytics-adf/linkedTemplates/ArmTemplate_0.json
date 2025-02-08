@@ -85,13 +85,16 @@
 				"parameters": {
 					"matchID": {
 						"type": "string"
+					},
+					"api_key": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
 				"type": "RestResource",
 				"typeProperties": {
 					"relativeUrl": {
-						"value": "@dataset().matchID",
+						"value": "@{dataset().matchID}?api_key=@{dataset().api_key}",
 						"type": "Expression"
 					}
 				},
@@ -243,6 +246,10 @@
 											"parameters": {
 												"matchID": {
 													"value": "@item()",
+													"type": "Expression"
+												},
+												"api_key": {
+													"value": "@pipeline().parameters.api_key",
 													"type": "Expression"
 												}
 											}
