@@ -5,10 +5,18 @@
 			"referenceName": "riot_rest",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"matchID": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": ""
+			"relativeUrl": {
+				"value": "@dataset().matchID",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	}

@@ -11,8 +11,8 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "match_data.json",
-				"folderPath": "match_data",
-				"container": "bronze"
+				"folderPath": "bronze/match_data",
+				"container": "lolytics"
 			}
 		},
 		"schema": {}

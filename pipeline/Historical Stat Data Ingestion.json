@@ -133,7 +133,13 @@
 							"inputs": [
 								{
 									"referenceName": "match_data_source",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"matchID": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
@@ -162,7 +168,7 @@
 			},
 			"batch_size": {
 				"type": "int",
-				"defaultValue": 100
+				"defaultValue": 3
 			},
 			"matchType": {
 				"type": "string",
