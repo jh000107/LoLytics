@@ -121,7 +121,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@variables('MatchIdJsonArrayOutput')",
+								"value": "@array(variables('MatchIdJsonArrayOutput'))",
 								"type": "Expression"
 							},
 							"activities": [
