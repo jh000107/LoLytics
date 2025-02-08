@@ -8,13 +8,16 @@
 		"parameters": {
 			"matchID": {
 				"type": "string"
+			},
+			"api_key": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@dataset().matchID",
+				"value": "@{dataset().matchID}/api_key=@{dataset().api_key}",
 				"type": "Expression"
 			}
 		},

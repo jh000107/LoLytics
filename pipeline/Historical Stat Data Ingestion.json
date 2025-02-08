@@ -138,6 +138,10 @@
 										"matchID": {
 											"value": "@item()",
 											"type": "Expression"
+										},
+										"api_key": {
+											"value": "@pipeline().parameters.api_key",
+											"type": "Expression"
 										}
 									}
 								}
