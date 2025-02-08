@@ -96,7 +96,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@array(variables('MatchIdJsonArrayOutput'))",
+						"value": "@variables('MatchIdJsonArrayOutput')",
 						"type": "Expression"
 					},
 					"isSequential": true,
