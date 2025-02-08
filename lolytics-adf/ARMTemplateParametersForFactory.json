@@ -9,7 +9,7 @@
 			"value": ""
 		},
 		"riot_rest_properties_typeProperties_url": {
-			"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"
+			"value": "https://americas.api.riotgames.com/lol/match/v5/matches/"
 		}
 	}
 }

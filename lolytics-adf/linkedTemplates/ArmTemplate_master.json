@@ -13,7 +13,7 @@
 		},
 		"riot_rest_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"
+			"defaultValue": "https://americas.api.riotgames.com/lol/match/v5/matches/"
 		},
 		"containerUri": {
 			"type": "string",
