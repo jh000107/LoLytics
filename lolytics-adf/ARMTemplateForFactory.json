@@ -127,60 +127,6 @@
 							"isSequential": true,
 							"activities": [
 								{
-									"name": "Get Match Data",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "RestSource",
-											"httpRequestTimeout": "00:01:40",
-											"requestInterval": "00.00:00:00.010",
-											"requestMethod": "GET"
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "match_data_source",
-											"type": "DatasetReference",
-											"parameters": {
-												"matchID": {
-													"value": "@item()",
-													"type": "Expression"
-												},
-												"api_key": {
-													"value": "@pipeline().parameters.api_key",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "match_data_sink",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									]
-								},
-								{
 									"name": "Append to AggregatedMatchData",
 									"type": "AppendVariable",
 									"dependsOn": [
@@ -196,6 +142,27 @@
 										"variableName": "AggregatedMatchData",
 										"value": {
 											"value": "@activity('Get Match Data').output",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Get Match Data",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {},
+										"url": {
+											"value": "https://americas.api.riotgames.com/lol/match/v5/matches/@{item()}?api_key=@{pipeline().parameters.api_key}",
 											"type": "Expression"
 										}
 									}
@@ -279,10 +246,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/match_data_source')]",
-				"[concat(variables('factoryId'), '/datasets/match_data_sink')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/match_data_sink')]",
