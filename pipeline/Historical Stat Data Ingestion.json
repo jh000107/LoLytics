@@ -116,7 +116,7 @@
 							"typeProperties": {
 								"variableName": "AggregatedMatchData",
 								"value": {
-									"value": "{\n  \"metadata\": \"@{activity('Get Match Data').output.metadata}\",\n  \"info\": \"@{activity('Get Match Data').output.info}\"\n}\n",
+									"value": "{\n  \"metadata\": @{activity('Get Match Data').output.metadata},\n  \"info\": @{activity('Get Match Data').output.info}\n}\n",
 									"type": "Expression"
 								}
 							}
