@@ -204,7 +204,7 @@
 			},
 			"api_key": {
 				"type": "string",
-				"defaultValue": "RGAPI-0c29a596-50c0-4e7d-a894-b348110f088b"
+				"defaultValue": "RGAPI-ce3513a7-5742-4bf7-83fb-324aeca67014"
 			}
 		},
 		"variables": {
