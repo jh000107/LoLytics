@@ -153,8 +153,64 @@
 									"type": "DatasetReference"
 								}
 							]
+						},
+						{
+							"name": "Append to AggregatedMatchData",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Match Data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "AggregatedMatchData",
+								"value": {
+									"value": "@activity('Get Match Data').output",
+									"type": "Expression"
+								}
+							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Save Match Data to Blob",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "For Each Match ID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2017-11-09",
+						"x-ms-blob-type": "BlockBlob"
+					},
+					"url": "https://lolyticsstorage.blob.core.windows.net/lolytics/bronze/match_data/match_data.json",
+					"body": {
+						"value": "@variables('AggregatedMatchData')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
 				}
 			}
 		],
@@ -186,6 +242,9 @@
 		},
 		"variables": {
 			"MatchIdJsonArrayOutput": {
+				"type": "Array"
+			},
+			"AggregatedMatchData": {
 				"type": "Array"
 			}
 		},
