@@ -3,31 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Match ID",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "GET",
-					"url": {
-						"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/@{pipeline().parameters.puuid}/ids?startTime=@{pipeline().parameters.startTime}&endTime=@{pipeline().parameters.endTime}&type=@{pipeline().parameters.matchType}&start=0&count=@{pipeline().parameters.batch_size}&api_key=@{pipeline().parameters.api_key}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Set JsonArrayOutput",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Get Match ID",
+						"activity": "For Each Batch",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -179,6 +159,41 @@
 						"resource": "https://storage.azure.com/"
 					}
 				}
+			},
+			{
+				"name": "For Each Batch",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(0, 9)",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Match ID",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/\n@{pipeline().parameters.puuid}/ids?\nstartTime=@{pipeline().parameters.startTime}&\nendTime=@{pipeline().parameters.endTime}&\ntype=@{pipeline().parameters.matchType}&\nstart=@{mul(item(), pipeline().parameters.batch_size)}&\ncount=@{pipeline().parameters.batch_size}&\napi_key=@{pipeline().parameters.api_key}",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -196,7 +211,7 @@
 			},
 			"batch_size": {
 				"type": "int",
-				"defaultValue": 3
+				"defaultValue": 100
 			},
 			"matchType": {
 				"type": "string",
