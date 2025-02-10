@@ -3,35 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set JsonArrayOutput",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "For Each Batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "MatchIdJsonArrayOutput",
-					"value": {
-						"value": "@json(activity('Get Match ID').output.response)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Save Match ID to Blob",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Set JsonArrayOutput",
+						"activity": "For Each Batch",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -53,7 +29,7 @@
 					},
 					"url": "https://lolyticsstorage.blob.core.windows.net/lolytics/bronze/match_id/match_id.json",
 					"body": {
-						"value": "@variables('MatchIdJsonArrayOutput')",
+						"value": "@variables('MatchIDArray')",
 						"type": "Expression"
 					},
 					"authentication": {
@@ -67,7 +43,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Set JsonArrayOutput",
+						"activity": "Save Match ID to Blob",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -191,6 +167,49 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Append to MatchIdArray",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "Set JsonArrayOutput",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "MatchIDArray",
+								"value": {
+									"value": "@variables('newMatchIdArray')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set JsonArrayOutput",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Match ID",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "newMatchIdArray",
+								"value": [
+									"@json(activity('Get Match ID').output.response)"
+								]
+							}
 						}
 					]
 				}
@@ -227,6 +246,12 @@
 				"type": "Array"
 			},
 			"AggregatedMatchData": {
+				"type": "Array"
+			},
+			"MatchIDArray": {
+				"type": "Array"
+			},
+			"newMatchIdArray": {
 				"type": "Array"
 			}
 		},
