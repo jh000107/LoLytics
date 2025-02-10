@@ -249,7 +249,7 @@
 			},
 			"api_key": {
 				"type": "string",
-				"defaultValue": "RGAPI-ce3513a7-5742-4bf7-83fb-324aeca67014"
+				"defaultValue": "RGAPI-776b6106-471b-482c-8ed7-213589dde293"
 			}
 		},
 		"variables": {
