@@ -5,6 +5,8 @@
 			{
 				"name": "Save Match ID to Blob",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Batch",
@@ -41,6 +43,8 @@
 			{
 				"name": "For Each Match ID",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Save Match ID to Blob",
@@ -103,6 +107,8 @@
 			{
 				"name": "Save Match Data to Blob",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Match ID",
@@ -143,7 +149,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@range(0, 9)",
+						"value": "@range(0, 5)",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -169,27 +175,7 @@
 							}
 						},
 						{
-							"name": "Append to MatchIdArray",
-							"type": "AppendVariable",
-							"dependsOn": [
-								{
-									"activity": "Set JsonArrayOutput",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "MatchIDArray",
-								"value": {
-									"value": "@variables('newMatchIdArray')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set JsonArrayOutput",
+							"name": "Set newMatchIdArray",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -206,9 +192,34 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "newMatchIdArray",
-								"value": [
-									"@json(activity('Get Match ID').output.response)"
-								]
+								"value": {
+									"value": "@json(activity('Get Match ID').output.response)\n\n\n\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Merge Match ID Array",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set newMatchIdArray",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "AggregatedMatchId",
+								"value": {
+									"value": "@json(concat('{\"mergedMatchIDs\":', string(split(concat(join(variables('newMatchIdArray'), ';'), ';', join(variables('MatchIDArray'), ';')), ';')), '}'))\n",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -230,7 +241,7 @@
 			},
 			"batch_size": {
 				"type": "int",
-				"defaultValue": 100
+				"defaultValue": 5
 			},
 			"matchType": {
 				"type": "string",
@@ -252,6 +263,9 @@
 				"type": "Array"
 			},
 			"newMatchIdArray": {
+				"type": "Array"
+			},
+			"AggregatedMatchId": {
 				"type": "Array"
 			}
 		},
