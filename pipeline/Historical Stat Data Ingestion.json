@@ -217,7 +217,7 @@
 							"typeProperties": {
 								"variableName": "AggregatedMatchId",
 								"value": {
-									"value": "@json(concat('{\"mergedMatchIDs\":', string(split(concat(join(variables('newMatchIdArray'), ';'), ';', join(variables('MatchIDArray'), ';')), ';')), '}'))\n",
+									"value": "@union(variables('newMatchIdArray'), variables('MatchIDArray'))",
 									"type": "Expression"
 								}
 							}
@@ -253,9 +253,6 @@
 			}
 		},
 		"variables": {
-			"MatchIdJsonArrayOutput": {
-				"type": "Array"
-			},
 			"AggregatedMatchData": {
 				"type": "Array"
 			},
