@@ -169,7 +169,7 @@
 							"typeProperties": {
 								"method": "GET",
 								"url": {
-									"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/\n@{pipeline().parameters.puuid}/ids?\nstartTime=@{pipeline().parameters.startTime}&\nendTime=@{pipeline().parameters.endTime}&\ntype=@{pipeline().parameters.matchType}&\nstart=@{mul(item(), pipeline().parameters.batch_size)}&\ncount=@{pipeline().parameters.batch_size}&\napi_key=@{pipeline().parameters.api_key}",
+									"value": "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/@{pipeline().parameters.puuid}/ids?startTime=@{pipeline().parameters.startTime}&endTime=@{pipeline().parameters.endTime}&type=@{pipeline().parameters.matchType}&start=@{mul(item(), pipeline().parameters.batch_size)}&count=@{pipeline().parameters.batch_size}&api_key=@{pipeline().parameters.api_key}",
 									"type": "Expression"
 								}
 							}
