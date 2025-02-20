@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('MatchIdJsonArrayOutput')",
+						"value": "@variables('AggregatedMatchId')",
 						"type": "Expression"
 					},
 					"isSequential": true,
