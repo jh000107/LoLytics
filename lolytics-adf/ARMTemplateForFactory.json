@@ -29,8 +29,6 @@
 					{
 						"name": "Save Match ID to Blob",
 						"type": "WebActivity",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "For Each Batch",
@@ -67,8 +65,6 @@
 					{
 						"name": "For Each Match ID",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Save Match ID to Blob",
@@ -80,7 +76,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@variables('MatchIdJsonArrayOutput')",
+								"value": "@variables('AggregatedMatchId')",
 								"type": "Expression"
 							},
 							"isSequential": true,
@@ -132,8 +128,6 @@
 					{
 						"name": "Save Match Data to Blob",
 						"type": "WebActivity",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "For Each Match ID",
