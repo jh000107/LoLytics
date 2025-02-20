@@ -221,6 +221,30 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Update MatchIDArray",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Merge Match ID Array",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "MatchIDArray",
+								"value": {
+									"value": "@variables('AggregatedMatchId')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
