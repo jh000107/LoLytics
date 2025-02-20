@@ -5,8 +5,6 @@
 			{
 				"name": "Save Match ID to Blob",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Batch",
@@ -43,8 +41,6 @@
 			{
 				"name": "For Each Match ID",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Save Match ID to Blob",
@@ -107,8 +103,6 @@
 			{
 				"name": "Save Match Data to Blob",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Match ID",
