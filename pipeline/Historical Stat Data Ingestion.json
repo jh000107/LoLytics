@@ -96,6 +96,22 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Wait",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Append to AggregatedMatchData",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
 						}
 					]
 				}
