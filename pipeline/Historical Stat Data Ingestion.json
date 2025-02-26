@@ -275,7 +275,7 @@
 			},
 			"batch_size": {
 				"type": "int",
-				"defaultValue": 100
+				"defaultValue": 1
 			},
 			"matchType": {
 				"type": "string",
@@ -283,7 +283,7 @@
 			},
 			"api_key": {
 				"type": "string",
-				"defaultValue": "RGAPI-e7506af5-4c08-40f9-8447-5c1628002b8a"
+				"defaultValue": "RGAPI-562720e4-05c7-4740-a86b-f9d83434acb8"
 			}
 		},
 		"variables": {
