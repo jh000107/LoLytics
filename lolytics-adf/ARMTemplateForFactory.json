@@ -76,7 +76,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@variables('AggregatedMatchId')",
+								"value": "@variables('MatchIDArray')",
 								"type": "Expression"
 							},
 							"isSequential": true,
@@ -120,6 +120,22 @@
 											"value": "https://americas.api.riotgames.com/lol/match/v5/matches/@{item()}?api_key=@{pipeline().parameters.api_key}",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Wait",
+									"type": "Wait",
+									"dependsOn": [
+										{
+											"activity": "Append to AggregatedMatchData",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
 									}
 								}
 							]
@@ -288,7 +304,7 @@
 					},
 					"batch_size": {
 						"type": "int",
-						"defaultValue": 5
+						"defaultValue": 1
 					},
 					"matchType": {
 						"type": "string",
@@ -296,7 +312,7 @@
 					},
 					"api_key": {
 						"type": "string",
-						"defaultValue": "RGAPI-e7506af5-4c08-40f9-8447-5c1628002b8a"
+						"defaultValue": "RGAPI-562720e4-05c7-4740-a86b-f9d83434acb8"
 					}
 				},
 				"variables": {
