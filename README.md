@@ -11,5 +11,5 @@ Match Data is collected through Riot's official API. Their API documentation can
 ### Azure Data Factory
 
 #### Data Ingestion
-- Batch Data: Time Range here
+- Batch Data: Time Range here (About 500 games)
 - Streaming Data: Time Interval here
