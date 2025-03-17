@@ -1,6 +1,8 @@
 # LoLytics
 End-to-End Data Engineering Pipeline for generating player stats and predictions
 
+The goal here is to create a live dashboard with periodic updates (could be real-time, but for cost efficiency).
+Web application having a ML model for my own stats would be fun.
 
 ## Data Source
 
